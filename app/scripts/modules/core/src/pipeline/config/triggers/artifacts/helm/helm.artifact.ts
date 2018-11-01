@@ -23,36 +23,40 @@ module(HELM_ARTIFACT, []).config(() => {
       this.artifact.type = 'helm/chart';
 
       this.onAccountChange = () => {
-        this.artifact.reference = this.selectedArtifactAccount;
-        ArtifactService.getArtifactNames('helm', this.artifact.reference).then(definitions => {
+        this.artifact.artifactAccount = this.selectedArtifactAccount;
+        ArtifactService.getArtifactNames('helm', this.artifact.artifactAccount).then(definitions => {
           this.chartNames = definitions;
         });
         this.chartVersions = [];
       };
       this.onNameChange = () => {
-        ArtifactService.getArtifactVersions('helm', this.artifact.reference, this.artifact.name).then(versions => {
-          this.chartVersions = versions;
-        });
+        ArtifactService.getArtifactVersions('helm', this.artifact.artifactAccount, this.artifact.name).then(
+          versions => {
+            this.chartVersions = versions;
+          },
+        );
       };
       AccountService.getArtifactAccounts().then(accounts => {
         this.artifactAccounts = accounts
           .filter(account => account.types.includes('helm/chart'))
           .map(account => account.name);
-        if (artifact.reference) {
+        if (artifact.artifactAccount) {
           this.selectedArtifactAccount = accounts.filter(
-            account => account.types.includes('helm/chart') && account.name === this.artifact.reference,
+            account => account.types.includes('helm/chart') && account.name === this.artifact.artifactAccount,
           )[0].name;
         }
       });
 
-      if (artifact.reference) {
-        ArtifactService.getArtifactNames('helm', this.artifact.reference).then(names => {
+      if (artifact.artifactAccount) {
+        ArtifactService.getArtifactNames('helm', this.artifact.artifactAccount).then(names => {
           this.chartNames = names;
         });
         if (artifact.name) {
-          ArtifactService.getArtifactVersions('helm', this.artifact.reference, this.artifact.name).then(versions => {
-            this.chartVersions = versions;
-          });
+          ArtifactService.getArtifactVersions('helm', this.artifact.artifactAccount, this.artifact.name).then(
+            versions => {
+              this.chartVersions = versions;
+            },
+          );
         }
       }
     },

@@ -16,7 +16,7 @@ export class HelmArtifactEditor extends React.Component<IArtifactEditorProps, IS
   constructor(props: IArtifactEditorProps) {
     super(props);
     this.state = { names: [], versions: [], artifact: this.props.artifact };
-    this.state.artifact.reference = this.props.account.name;
+    this.state.artifact.artifactAccount = this.props.account.name;
     ArtifactService.getArtifactNames('helm', this.props.account.name).then(names => {
       this.setState({ names });
     });
@@ -24,7 +24,7 @@ export class HelmArtifactEditor extends React.Component<IArtifactEditorProps, IS
 
   public componentWillReceiveProps(nextProps: IArtifactEditorProps) {
     if (this.props.account.name !== nextProps.account.name) {
-      this.state.artifact.reference = nextProps.account.name;
+      this.state.artifact.artifactAccount = nextProps.account.name;
       this.state.artifact.name = '';
       this.state.artifact.version = '';
       nextProps.onChange({ ...this.state.artifact });
@@ -72,7 +72,7 @@ export class HelmArtifactEditor extends React.Component<IArtifactEditorProps, IS
   };
 
   private onNameChange = () => {
-    ArtifactService.getArtifactVersions('helm', this.state.artifact.reference, this.state.artifact.name).then(
+    ArtifactService.getArtifactVersions('helm', this.state.artifact.artifactAccount, this.state.artifact.name).then(
       versions => {
         this.setState({ versions });
       },
